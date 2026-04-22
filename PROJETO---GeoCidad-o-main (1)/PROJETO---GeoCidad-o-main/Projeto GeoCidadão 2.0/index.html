@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>GeoData Brasil</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-body">
+
+<div class="login-card">
+
+<h1>🌍 GeoData Brasil</h1>
+<p>Monitoramento urbano e participação cidadã</p>
+
+<input id="email" placeholder="E-mail">
+<input id="cpf" placeholder="CPF" maxlength="14">
+<input type="password" placeholder="Senha">
+
+<button onclick="entrar()">Entrar</button>
+
+</div>
+
+<script>
+const cpf = document.getElementById("cpf");
+
+cpf.addEventListener("input", ()=>{
+ let v = cpf.value.replace(/\D/g,"");
+ v = v.replace(/(\d{3})(\d)/,"$1.$2");
+ v = v.replace(/(\d{3})(\d)/,"$1.$2");
+ v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+ cpf.value = v;
+});
+
+function entrar(){
+ localStorage.setItem("user", email.value);
+ window.location = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

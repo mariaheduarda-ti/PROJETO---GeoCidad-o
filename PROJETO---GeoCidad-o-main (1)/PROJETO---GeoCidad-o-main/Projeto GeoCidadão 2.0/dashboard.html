@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>GeoData Brasil</title>
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<header class="topbar">
+<h1>🌍 GeoData Brasil</h1>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+<button onclick="trocar('home')">🏠 Início</button>
+<button onclick="trocar('dados')">📊 Indicadores</button>
+<button onclick="trocar('noticias')">📰 Notícias</button>
+<button onclick="trocar('denuncias')">🚨 Denúncias</button>
+<button onclick="trocar('seguranca')">🔐 Segurança</button>
+<button onclick="trocar('perfil')">👤 Perfil</button>
+</aside>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+<div class="card">
+<h2>🌍 GeoData Brasil</h2>
+<p>
+Plataforma que analisa o espaço urbano e permite a participação da população
+na identificação de problemas da cidade.
+</p>
+<p>
+Com base nos dados, é possível entender desigualdades socioespaciais
+e melhorar a qualidade de vida.
+</p>
+</div>
+
+<div class="grid-3">
+<div class="card destaque"><h3>120</h3><p>Ocorrências</p></div>
+<div class="card destaque"><h3>35</h3><p>Áreas de risco</p></div>
+<div class="card destaque"><h3>60</h3><p>Pontos críticos</p></div>
+</div>
+
+</section>
+
+<!-- INDICADORES -->
+<section id="dados" class="page">
+
+<h2>Indicadores Urbanos</h2>
+
+<div class="card">
+<canvas id="grafico"></canvas>
+</div>
+
+<div id="infoIndicador" class="card" style="display:none;"></div>
+
+<div class="card">
+<p>
+Os dados mostram problemas urbanos reais:
+50% lixo, 30% alagamento e 20% infraestrutura.
+Esses problemas refletem desigualdades no espaço urbano.
+</p>
+</div>
+
+</section>
+
+<!-- NOTÍCIAS -->
+<section id="noticias" class="page">
+
+<h2>Notícias e Alertas</h2>
+
+<div class="grid-3">
+
+<div class="card clicavel" onclick="abrirNoticia('chuva')">
+<h3>🌧 Chuvas intensas</h3>
+<p>Impactos urbanos</p>
+</div>
+
+<div class="card clicavel" onclick="abrirNoticia('alagamento')">
+<h3>🌊 Alagamentos</h3>
+<p>Drenagem urbana</p>
+</div>
+
+<div class="card clicavel" onclick="abrirNoticia('infra')">
+<h3>🚧 Infraestrutura</h3>
+<p>Problemas nas vias</p>
+</div>
+
+</div>
+
+<div id="noticia-box" class="card" style="display:none;"></div>
+
+</section>
+
+<!-- DENÚNCIAS -->
+<section id="denuncias" class="page">
+
+<h2>Denúncias</h2>
+
+<div class="card">
+<input id="bairroInput" placeholder="Bairro">
+<input id="problemaInput" placeholder="Problema">
+<button onclick="salvarDenuncia()">Enviar denúncia</button>
+</div>
+
+<ul id="listaDenuncias"></ul>
+
+</section>
+
+<!-- SEGURANÇA -->
+<section id="seguranca" class="page">
+
+<h2>Segurança de Dados</h2>
+
+<button onclick="vazamento()" class="danger">Simular vazamento</button>
+
+<div id="vazamento-box" class="alert">
+<p>Dados expostos: CPF e localização</p>
+<button onclick="proteger()">Corrigir</button>
+</div>
+
+<div id="protecao-box" class="success">
+<p>Dados protegidos conforme LGPD</p>
+</div>
+
+</section>
+
+<!-- PERFIL -->
+<section id="perfil" class="page">
+
+<h2>Perfil</h2>
+
+<div class="card" style="text-align:center;">
+<img class="avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+<h3 id="user"></h3>
+<p><strong>Denúncias:</strong> 3</p>
+<p><strong>Nível:</strong> Usuário ativo</p>
+<p>Participa da melhoria urbana.</p>
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<footer>
+GeoData Brasil • IBGE • Gov.br • Projeto de Geografia
+</footer>
+
+<script>
+
+function trocar(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+/* GRÁFICO */
+window.onload=()=>{
+
+window.chart = new Chart(document.getElementById("grafico"),{
+type:"doughnut",
+data:{
+labels:["Lixo","Alagamento","Infraestrutura"],
+datasets:[{data:[50,30,20]}]
+}
+});
+
+document.getElementById("user").innerText =
+"Usuário: " + localStorage.getItem("user");
+
+let lista = [
+{bairro:"Ponta Negra", problema:"Alagamento"},
+{bairro:"Igapó", problema:"Buraco"},
+{bairro:"Neópolis", problema:"Lixo"}
+];
+
+localStorage.setItem("denuncias", JSON.stringify(lista));
+mostrarDenuncias();
+}
+
+/* NOTÍCIAS */
+function abrirNoticia(tipo){
+let box = document.getElementById("noticia-box");
+box.style.display="block";
+
+if(tipo=="chuva"){
+box.innerHTML="<h3>Chuvas aumentaram 30%</h3><p>Impacto na drenagem urbana.</p>";
+}
+if(tipo=="alagamento"){
+box.innerHTML="<h3>40% dos casos são alagamentos</h3><p>Falta de infraestrutura.</p>";
+}
+if(tipo=="infra"){
+box.innerHTML="<h3>Problemas nas vias</h3><p>Falta de manutenção.</p>";
+}
+}
+
+/* INDICADORES */
+document.getElementById("grafico").onclick = function(){
+let box = document.getElementById("infoIndicador");
+box.style.display="block";
+
+box.innerHTML=`
+<h3>Dados</h3>
+<p>Lixo: 50%</p>
+<p>Alagamento: 30%</p>
+<p>Infraestrutura: 20%</p>
+`;
+}
+
+/* DENÚNCIAS */
+function salvarDenuncia(){
+let lista = JSON.parse(localStorage.getItem("denuncias"));
+lista.push({bairro:bairroInput.value, problema:problemaInput.value});
+localStorage.setItem("denuncias", JSON.stringify(lista));
+mostrarDenuncias();
+}
+
+function mostrarDenuncias(){
+let ul = document.getElementById("listaDenuncias");
+ul.innerHTML="";
+let lista = JSON.parse(localStorage.getItem("denuncias"));
+lista.forEach(d=>{
+let li=document.createElement("li");
+li.innerText=d.bairro+" - "+d.problema;
+ul.appendChild(li);
+});
+}
+
+/* SEGURANÇA */
+function vazamento(){
+document.getElementById("vazamento-box").style.display="block";
+}
+
+function proteger(){
+document.getElementById("protecao-box").style.display="block";
+}
+
+</script>
+
+</body>
+</html>
